@@ -4,143 +4,160 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>학부모 상담 주간 예약 시스템</title>
+  <!-- supabase-js v2 CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg: #f6f8fb;
-      --card: #ffffff;
+      --bg-color: #f6f8fc;
+      --card-bg: #ffffff;
       --primary: #4f7df3;
       --primary-hover: #3b68dc;
-      --primary-soft: #eef3ff;
-      --success: #16a34a;
-      --success-soft: #dcfce7;
+      --primary-light: #eef3fe;
+      --mint: #10b981;
+      --mint-light: #ecfdf5;
       --danger: #ef4444;
-      --danger-soft: #fee2e2;
-      --text: #1e293b;
-      --muted: #64748b;
+      --danger-light: #fef2f2;
+      --text-main: #1e293b;
+      --text-sub: #64748b;
       --border: #e2e8f0;
-      --radius: 14px;
+      --radius: 16px;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
     }
 
     body {
-      background: var(--bg);
-      color: var(--text);
+      background-color: var(--bg-color);
+      color: var(--text-main);
       line-height: 1.5;
-      padding: 16px;
-    }
-
-    .container {
-      max-width: 760px;
-      margin: 0 auto;
+      padding-bottom: 48px;
     }
 
     header {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 20px;
-      margin-bottom: 16px;
-      border: 1px solid var(--border);
+      background: linear-gradient(135deg, #5a8dee 0%, #7aa5f8 100%);
+      color: white;
+      padding: 24px 16px 28px;
       text-align: center;
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
+      box-shadow: 0 4px 14px rgba(79, 125, 243, 0.18);
     }
 
     header h1 {
-      font-size: 1.35rem;
-      color: var(--text);
-      margin-bottom: 4px;
+      font-size: 1.45rem;
+      font-weight: 700;
+      margin-bottom: 6px;
     }
 
     header p {
       font-size: 0.9rem;
-      color: var(--muted);
+      opacity: 0.92;
     }
 
-    /* 탭 네비게이션 */
+    .container {
+      max-width: 780px;
+      margin: -16px auto 0;
+      padding: 0 16px;
+    }
+
     .tabs {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 16px;
+      background: var(--card-bg);
+      padding: 6px;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      margin-bottom: 20px;
+      gap: 6px;
     }
 
     .tab-btn {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 8px;
+      border: none;
+      background: transparent;
+      padding: 11px 8px;
+      border-radius: 10px;
       font-size: 0.92rem;
       font-weight: 600;
-      color: var(--muted);
+      color: var(--text-sub);
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.2s;
     }
 
     .tab-btn.active {
       background: var(--primary);
-      color: #ffffff;
-      border-color: var(--primary);
-      box-shadow: 0 4px 12px rgba(79, 125, 243, 0.25);
-    }
-
-    .panel {
-      display: none;
-    }
-
-    .panel.active {
-      display: block;
+      color: white;
+      box-shadow: 0 2px 6px rgba(79, 125, 243, 0.3);
     }
 
     .card {
-      background: var(--card);
-      border: 1px solid var(--border);
+      background: var(--card-bg);
       border-radius: var(--radius);
       padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+      margin-bottom: 18px;
+      border: 1px solid var(--border);
     }
 
-    .card h2 {
-      font-size: 1.1rem;
+    .card-title {
+      font-size: 1.08rem;
+      font-weight: 700;
       margin-bottom: 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 8px;
     }
 
-    /* 날짜 그룹 및 시간 슬롯 버튼 */
-    .date-group {
-      margin-bottom: 18px;
+    .section {
+      display: none;
     }
 
-    .date-title {
-      font-size: 0.95rem;
-      font-weight: 700;
+    .section.active {
+      display: block;
+    }
+
+    .date-pills {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 16px;
+    }
+
+    .date-pill {
+      flex: 0 0 auto;
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .date-pill.active {
+      border-color: var(--primary);
+      background: var(--primary-light);
       color: var(--primary);
-      background: var(--primary-soft);
-      padding: 6px 12px;
-      border-radius: 8px;
-      display: inline-block;
-      margin-bottom: 10px;
     }
 
     .slot-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
-      gap: 8px;
+      grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+      gap: 10px;
     }
 
     .slot-btn {
+      padding: 14px 10px;
+      border-radius: 12px;
       border: 1.5px solid var(--border);
-      background: #ffffff;
-      border-radius: 10px;
-      padding: 10px 8px;
+      background: #fff;
       text-align: center;
       cursor: pointer;
       transition: all 0.15s;
@@ -148,13 +165,14 @@
 
     .slot-btn:hover:not(:disabled) {
       border-color: var(--primary);
-      background: var(--primary-soft);
+      background: var(--primary-light);
+      transform: translateY(-1px);
     }
 
     .slot-btn.selected {
       border-color: var(--primary);
       background: var(--primary);
-      color: #ffffff;
+      color: #fff;
     }
 
     .slot-btn.selected .slot-status {
@@ -163,34 +181,44 @@
 
     .slot-btn:disabled {
       background: #f1f5f9;
-      border-color: #e2e8f0;
       color: #94a3b8;
       cursor: not-allowed;
+      border-color: #e2e8f0;
     }
 
     .slot-time {
-      display: block;
+      font-size: 0.96rem;
       font-weight: 700;
-      font-size: 0.92rem;
+      display: block;
+      margin-bottom: 4px;
     }
 
     .slot-status {
-      display: block;
       font-size: 0.78rem;
-      margin-top: 2px;
-      color: var(--success);
       font-weight: 600;
+      color: var(--mint);
     }
 
     .slot-btn:disabled .slot-status {
       color: #94a3b8;
     }
 
-    /* 폼 요소 */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
+    }
+
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 540px) {
+      .form-grid, .form-grid-3 {
+        grid-template-columns: 1fr;
+      }
     }
 
     .form-group {
@@ -205,24 +233,24 @@
       display: block;
       font-size: 0.85rem;
       font-weight: 600;
+      color: var(--text-sub);
       margin-bottom: 5px;
-      color: var(--text);
     }
 
     input, select, textarea {
       width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--border);
+      padding: 11px 12px;
+      border: 1.5px solid var(--border);
       border-radius: 10px;
       font-size: 0.95rem;
-      background: #ffffff;
-      color: var(--text);
+      color: var(--text-main);
+      background: #fff;
+      transition: border-color 0.15s;
     }
 
     input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79, 125, 243, 0.15);
     }
 
     textarea {
@@ -235,18 +263,18 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      padding: 12px 16px;
-      border-radius: 10px;
+      padding: 12px 18px;
+      border-radius: 11px;
       border: none;
       font-size: 0.95rem;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.15s;
+      transition: all 0.15s;
     }
 
     .btn-primary {
       background: var(--primary);
-      color: #ffffff;
+      color: white;
       width: 100%;
     }
 
@@ -254,158 +282,161 @@
       background: var(--primary-hover);
     }
 
-    .btn-danger {
-      background: var(--danger-soft);
-      color: var(--danger);
-      padding: 8px 12px;
-      font-size: 0.85rem;
-    }
-
-    .btn-danger:hover {
-      background: #fecaca;
-    }
-
     .btn-sm {
-      padding: 6px 10px;
+      padding: 7px 12px;
       font-size: 0.82rem;
       border-radius: 8px;
     }
 
-    /* 배지 및 상태 표시 */
+    .btn-danger {
+      background: var(--danger-light);
+      color: var(--danger);
+      border: 1px solid #fecaca;
+    }
+
+    .btn-danger:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: var(--text-main);
+      border: 1.5px solid var(--border);
+    }
+
     .badge {
       display: inline-block;
-      padding: 3px 8px;
-      border-radius: 6px;
+      padding: 3px 9px;
+      border-radius: 999px;
       font-size: 0.78rem;
       font-weight: 700;
     }
 
     .badge-open {
-      background: var(--success-soft);
-      color: var(--success);
+      background: var(--mint-light);
+      color: var(--mint);
     }
 
     .badge-closed {
       background: #f1f5f9;
-      color: var(--muted);
+      color: #64748b;
     }
 
     .badge-booked {
-      background: var(--primary-soft);
+      background: var(--primary-light);
       color: var(--primary);
     }
 
-    /* 예약 조회 결과 카드 */
-    .booking-item {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 10px;
-      background: #fafcff;
+    .table-wrap {
+      overflow-x: auto;
     }
 
-    .booking-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
     }
 
-    /* 교사 관리 테이블 */
-    .teacher-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      margin-bottom: 8px;
-      background: #ffffff;
+    th, td {
+      padding: 11px 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
     }
 
-    .teacher-row.is-booked {
-      background: #f8faff;
-      border-color: #c7d7fe;
+    th {
+      background: #f8fafc;
+      color: var(--text-sub);
+      font-weight: 700;
     }
 
-    .teacher-info {
-      flex: 1;
-      min-width: 220px;
+    td.memo-cell {
+      white-space: normal;
+      min-width: 160px;
+      max-width: 240px;
+      color: var(--text-sub);
     }
 
-    .memo-box {
-      margin-top: 6px;
-      padding: 8px 10px;
-      background: #f1f5f9;
-      border-radius: 8px;
-      font-size: 0.84rem;
-      color: #334155;
-    }
-
-    .empty-msg {
+    .empty-box {
       text-align: center;
-      color: var(--muted);
-      padding: 24px 12px;
+      padding: 32px 16px;
+      color: var(--text-sub);
       font-size: 0.92rem;
+      background: #f8fafc;
+      border-radius: 12px;
     }
 
     .selected-banner {
-      background: var(--primary-soft);
-      border: 1px solid #c7d7fe;
-      color: var(--primary-hover);
-      padding: 10px 14px;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 12px 14px;
       border-radius: 10px;
-      font-size: 0.9rem;
       font-weight: 700;
+      font-size: 0.92rem;
       margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    @media (max-width: 540px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-      .slot-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    .helper-text {
+      font-size: 0.82rem;
+      color: var(--text-sub);
+      margin-top: 6px;
+    }
+
+    .preview-chip {
+      background: #f1f5f9;
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 12px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>🌱 학부모 상담 주간 예약</h1>
-      <p>원하시는 상담 날짜와 시간을 선택해 신청해 주세요. (1회 20분 진행)</p>
-    </header>
 
+  <header>
+    <h1>🌱 학부모 상담 주간 예약</h1>
+    <p>원하시는 날짜와 상담 시간을 선택해 신청해 주세요</p>
+  </header>
+
+  <div class="container">
+    <!-- 탭 네비게이션 -->
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('book')">📅 상담 예약</button>
+      <button class="tab-btn active" onclick="switchTab('book')">📅 상담 예약하기</button>
       <button class="tab-btn" onclick="switchTab('check')">🔍 내 예약 확인·취소</button>
       <button class="tab-btn" onclick="switchTab('teacher')">👩‍🏫 교사 관리</button>
     </div>
 
-    <!-- 1. 학부모 상담 예약 탭 -->
-    <section id="panel-book" class="panel active">
+    <!-- [탭 1] 학부모 예약 신청 -->
+    <div id="tab-book" class="section active">
       <div class="card">
-        <h2>
-          <span>1. 상담 시간 선택</span>
-          <button class="btn btn-sm" style="background:#f1f5f9; color:#334155;" onclick="loadOpenSlots()">🔄 새로고침</button>
-        </h2>
-        <div id="slots-container">
-          <div class="empty-msg">상담 가능 시간을 불러오는 중입니다...</div>
+        <div class="card-title">
+          <span>1. 상담 날짜 및 시간 선택</span>
+          <button class="btn btn-outline btn-sm" onclick="loadOpenSlots()">🔄 새로고침</button>
+        </div>
+        <div id="parent-date-pills" class="date-pills"></div>
+        <div id="parent-slot-grid" class="slot-grid">
+          <div class="empty-box">불러오는 중...</div>
         </div>
       </div>
 
-      <div class="card" id="booking-form-card">
-        <h2>2. 신청 정보 입력</h2>
-        <div id="selected-slot-banner" class="selected-banner" style="display:none;"></div>
+      <div class="card" id="booking-form-card" style="display: none;">
+        <div class="card-title">2. 신청자 정보 입력</div>
+        <div class="selected-banner">
+          <span id="selected-slot-label">선택된 시간: -</span>
+          <button type="button" class="btn btn-outline btn-sm" onclick="clearSelectedSlot()">변경</button>
+        </div>
 
         <form id="booking-form" onsubmit="submitBooking(event)">
           <div class="form-grid">
             <div class="form-group">
               <label for="student-number">학생 번호 *</label>
-              <input type="number" id="student-number" min="1" max="50" placeholder="예: 5" required />
+              <input type="number" id="student-number" min="1" max="40" placeholder="예: 12" required />
             </div>
             <div class="form-group">
               <label for="student-name">학생 이름 *</label>
@@ -423,123 +454,547 @@
               </select>
             </div>
             <div class="form-group full">
-              <label for="pin-code">예약 조회·취소용 비밀번호 (숫자 4자리) *</label>
-              <input type="password" id="pin-code" maxlength="4" pattern="\d{4}" inputmode="numeric" placeholder="예: 1234 (예약 확인 시 필요)" required />
+              <label for="pin-code">예약 확인용 비밀번호 (숫자 4자리) *</label>
+              <input type="password" id="pin-code" maxlength="4" pattern="\d{4}" inputmode="numeric" placeholder="예약 조회 및 취소 시 필요합니다 (숫자 4자리)" required />
             </div>
             <div class="form-group full">
               <label for="memo">사전 상담 내용 (선택)</label>
-              <textarea id="memo" placeholder="교우 관계, 학습 태도 등 미리 나누고 싶은 이야기가 있다면 적어 주세요."></textarea>
+              <textarea id="memo" placeholder="교우관계, 학습, 생활습관 등 미리 나누고 싶은 이야기를 적어주세요."></textarea>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary" id="submit-btn">상담 예약 신청하기</button>
+          <button type="submit" class="btn btn-primary" id="submit-booking-btn">상담 예약 완료하기</button>
         </form>
       </div>
-    </section>
+    </div>
 
-    <!-- 2. 내 예약 조회 및 취소 탭 -->
-    <section id="panel-check" class="panel">
+    <!-- [탭 2] 학부모 본인 예약 조회 및 취소 -->
+    <div id="tab-check" class="section">
       <div class="card">
-        <h2>내 예약 조회 및 취소</h2>
-        <form onsubmit="searchMyBooking(event)">
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="check-name">학생 이름</label>
-              <input type="text" id="check-name" placeholder="예: 김민준" required />
-            </div>
-            <div class="form-group">
-              <label for="check-pin">비밀번호 (숫자 4자리)</label>
-              <input type="password" id="check-pin" maxlength="4" pattern="\d{4}" inputmode="numeric" placeholder="예: 1234" required />
-            </div>
+        <div class="card-title">내 예약 조회 및 취소</div>
+        <form onsubmit="searchMyBooking(event)" class="form-grid">
+          <div class="form-group">
+            <label for="check-name">학생 이름</label>
+            <input type="text" id="check-name" placeholder="예: 김민준" required />
           </div>
-          <button type="submit" class="btn btn-primary">예약 내역 조회하기</button>
+          <div class="form-group">
+            <label for="check-pin">예약 비밀번호 (숫자 4자리)</label>
+            <input type="password" id="check-pin" maxlength="4" pattern="\d{4}" inputmode="numeric" placeholder="숫자 4자리 입력" required />
+          </div>
+          <div class="form-group full">
+            <button type="submit" class="btn btn-primary">예약 내역 조회하기</button>
+          </div>
         </form>
-
-        <div id="my-booking-result" style="margin-top: 16px;"></div>
       </div>
-    </section>
 
-    <!-- 3. 교사 관리 탭 -->
-    <section id="panel-teacher" class="panel">
-      <div class="card" id="teacher-login-box">
-        <h2>교사 관리자 인증</h2>
+      <div id="my-booking-result"></div>
+    </div>
+
+    <!-- [탭 3] 교사 관리 모드 -->
+    <div id="tab-teacher" class="section">
+      <div class="card" id="teacher-login-card">
+        <div class="card-title">교사 인증</div>
         <form onsubmit="loginTeacher(event)">
           <div class="form-group">
-            <label for="teacher-pw">교사 비밀번호 (초기값: 1234)</label>
-            <input type="password" id="teacher-pw" placeholder="비밀번호 입력" required />
+            <label for="teacher-pw">교사 비밀번호</label>
+            <input type="password" id="teacher-pw" placeholder="비밀번호 입력 (기본값: 1234)" required />
           </div>
-          <button type="submit" class="btn btn-primary">관리 화면 열기</button>
+          <button type="submit" class="btn btn-primary">관리자 화면 열기</button>
         </form>
       </div>
 
-      <div id="teacher-dashboard" style="display:none;">
+      <div id="teacher-dashboard" style="display: none;">
+        <!-- 1) 맞춤형 시간표 일괄 생성 -->
         <div class="card">
-          <h2>⏰ 상담 시간표 일괄 생성 (09:00 시작 · 20분 상담 + 5분 휴식)</h2>
-          <form onsubmit="generateTeacherSlots(event)">
-            <div class="form-grid">
+          <div class="card-title">
+            <span>⏰ 상담 시간표 맞춤 생성</span>
+            <button class="btn btn-outline btn-sm" onclick="logoutTeacher()">잠금</button>
+          </div>
+          <form onsubmit="generateSlots(event)">
+            <div class="form-grid-3">
               <div class="form-group">
                 <label for="gen-date">상담 날짜</label>
                 <input type="date" id="gen-date" required />
               </div>
               <div class="form-group">
-                <label for="gen-end">마감 시간 (이 시간 전까지 생성)</label>
-                <input type="time" id="gen-end" value="16:30" required />
+                <label for="gen-start">시작 시간</label>
+                <input type="time" id="gen-start" value="09:00" oninput="updatePreviewText()" required />
+              </div>
+              <div class="form-group">
+                <label for="gen-end">마감 시간</label>
+                <input type="time" id="gen-end" value="16:30" oninput="updatePreviewText()" required />
               </div>
             </div>
-            <button type="submit" class="btn btn-primary">해당 날짜 시간표 생성하기</button>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="gen-duration">1회 상담 시간 (분)</label>
+                <input type="number" id="gen-duration" min="5" max="120" step="5" value="20" oninput="updatePreviewText()" required />
+              </div>
+              <div class="form-group">
+                <label for="gen-break">쉬는 시간 간격 (분)</label>
+                <input type="number" id="gen-break" min="0" max="60" step="5" value="5" oninput="updatePreviewText()" required />
+              </div>
+            </div>
+
+            <div class="preview-chip" id="gen-preview-text">
+              미리보기: 09:00 ~ 09:20, 09:25 ~ 09:45 ... 간격으로 생성됩니다.
+            </div>
+
+            <button type="submit" class="btn btn-primary">해당 조건으로 시간표 생성하기</button>
+            <p class="helper-text">* 생성 직후에는 모두 '닫힘' 상태입니다. 아래 표에서 학부모에게 열어줄 시간만 [열기]를 눌러주세요.</p>
           </form>
-          <p style="font-size:0.82rem; color:var(--muted); margin-top:8px;">
-            * 생성된 시간은 처음에 <strong>[닫힘]</strong> 상태입니다. 아래 목록에서 상담 가능한 시간만 클릭해 열어 주세요.
-          </p>
         </div>
 
+        <!-- 2) 날짜별 시간대 열기/닫기 및 예약 현황 -->
         <div class="card">
-          <h2>
-            <span>📋 전체 시간표 및 예약 현황</span>
-            <button class="btn btn-sm" style="background:#f1f5f9; color:#334155;" onclick="loadTeacherSchedule()">🔄 새로고침</button>
-          </h2>
-          <div id="teacher-schedule-list"></div>
+          <div class="card-title">
+            <span>📋 전체 시간표 개폐 및 예약자 명단</span>
+            <button class="btn btn-outline btn-sm" onclick="loadTeacherSchedule()">🔄 새로고침</button>
+          </div>
+          <div id="teacher-date-pills" class="date-pills"></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>시간</th>
+                  <th>공개 상태</th>
+                  <th>예약 현황</th>
+                  <th>학생/연락처</th>
+                  <th>방식</th>
+                  <th>사전 상담 내용</th>
+                  <th>관리</th>
+                </tr>
+              </thead>
+              <tbody id="teacher-schedule-body">
+                <tr><td colspan="7" style="text-align:center;">데이터를 불러오는 중...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 
   <script>
-    // ==========================================
-    // 1. Supabase 연결 설정 (여기에 값을 붙여 넣으세요)
-    // ==========================================
-    const SUPABASE_URL = 'https://xnmyppziwowxcysnflvw.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_2lJ5Bdj2lCyr3XDFdPsVRA_6qwLlxRT';
+    // =========================================================
+    // 1. Supabase 설정 (본인의 프로젝트 URL과 Publishable Key 입력)
+    // =========================================================
+    const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+    const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_OR_PUBLISHABLE_KEY';
 
-    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 상태 변수
+    let openSlots = [];
+    let selectedParentDate = null;
     let selectedSlot = null;
-    let teacherPassword = '';
 
-    // 요일 포맷 헬퍼 (예: 2026-11-23 (월))
-    function formatDateKorean(dateStr) {
-      const days = ['일', '월', '화', '수', '목', '금', '토'];
+    let teacherPassword = '';
+    let allTeacherSlots = [];
+    let selectedTeacherDate = null;
+
+    const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
+
+    function formatDateWithDay(dateStr) {
       const [y, m, d] = dateStr.split('-').map(Number);
       const dt = new Date(y, m - 1, d);
-      return `${y}년 ${m}월 ${d}일 (${days[dt.getDay()]})`; }  // 시간 포맷 헬퍼 (HH:MM:SS -> HH:MM) function formatTime(timeStr) { return timeStr ? timeStr.slice(0, 5) : ''; }  // 탭 전환 function switchTab(tabName) { document.querySelectorAll('.tab-btn').forEach((btn, idx) => { const names = ['book', 'check', 'teacher']; btn.classList.toggle('active', names[idx] === tabName); }); document.querySelectorAll('.panel').forEach(panel => { panel.classList.remove('active'); }); document.getElementById(`panel-${tabName}`).classList.add('active');
-
-      if (tabName === 'book') loadOpenSlots();
-      if (tabName === 'teacher' && teacherPassword) loadTeacherSchedule();
+      return `${m}월 ${d}일 (${DAY_NAMES[dt.getDay()]})`;
     }
 
-    // ==========================================
-    // 2. 학부모용: 오픈된 상담 시간대 불러오기
-    // ==========================================
-    async function loadOpenSlots() {
-      const container = document.getElementById('slots-container');
-      container.innerHTML = '<div class="empty-msg">시간표를 불러오는 중입니다...</div>';
+    function formatTime(timeStr) {
+      return timeStr ? timeStr.slice(0, 5) : '';
+    }
 
-      const { data, error } = await db
+    function addMinutesToTimeStr(timeStr, minsToAdd) {
+      const [h, m] = timeStr.split(':').map(Number);
+      const total = h * 60 + m + minsToAdd;
+      const nh = String(Math.floor(total / 60) % 24).padStart(2, '0');
+      const nm = String(total % 60).padStart(2, '0');
+      return `${nh}:${nm}`;
+    }
+
+    function updatePreviewText() {
+      const start = document.getElementById('gen-start').value || '09:00';
+      const dur = parseInt(document.getElementById('gen-duration').value || '20', 10);
+      const brk = parseInt(document.getElementById('gen-break').value || '5', 10);
+      const preview = document.getElementById('gen-preview-text');
+
+      if (dur <= 0 || brk < 0) {
+        preview.textContent = '상담 시간은 1분 이상, 쉬는 시간은 0분 이상 입력해 주세요.';
+        return;
+      }
+
+      const firstEnd = addMinutesToTimeStr(start, dur);
+      const secondStart = addMinutesToTimeStr(start, dur + brk);
+      const secondEnd = addMinutesToTimeStr(secondStart, dur);
+
+      preview.textContent = `미리보기: ${start}~${firstEnd}, ${secondStart}~${secondEnd} ... (${dur}분 상담 + ${brk}분 휴식)`;
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+        const names = ['book', 'check', 'teacher'];
+        btn.classList.toggle('active', names[idx] === tabName);
+      });
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+
+      if (tabName === 'book') {
+        loadOpenSlots();
+      }
+    }
+
+    // =========================================================
+    // 2. [학부모] 열린 상담 시간 조회 및 예약 신청
+    // =========================================================
+    async function loadOpenSlots() {
+      const grid = document.getElementById('parent-slot-grid');
+      const pills = document.getElementById('parent-date-pills');
+
+      const { data, error } = await supabaseClient
         .from('counseling_slots')
-        .select('id, counsel_date, start_time, end_time, is_booked')
+        .select('*')
         .eq('is_open', true)
         .order('counsel_date', { ascending: true })
         .order('start_time', { ascending: true });
 
       if (error) {
-        container.innerHTML = `<div class="empty-msg" style="color:var(--danger);">시간표를 불러오지 못했습니다:
+        grid.innerHTML = `<div class="empty-box">시간표를 불러오지 못했습니다.<br>(${error.message})</div>`;
+        return;
+      }
+
+      openSlots = data || [];
+      const dates = [...new Set(openSlots.map(s => s.counsel_date))];
+
+      if (dates.length === 0) {
+        pills.innerHTML = '';
+        grid.innerHTML = '<div class="empty-box">현재 오픈된 상담 일정이 없습니다.</div>';
+        return;
+      }
+
+      if (!selectedParentDate || !dates.includes(selectedParentDate)) {
+        selectedParentDate = dates[0];
+      }
+
+      pills.innerHTML = dates.map(d => `
+        <button type="button" class="date-pill ${d === selectedParentDate ? 'active' : ''}" onclick="selectParentDate('${d}')">
+          ${formatDateWithDay(d)}
+        </button>
+      `).join('');
+
+      renderParentSlots();
+    }
+
+    function selectParentDate(dateStr) {
+      selectedParentDate = dateStr;
+      clearSelectedSlot();
+      loadOpenSlots();
+    }
+
+    function renderParentSlots() {
+      const grid = document.getElementById('parent-slot-grid');
+      const daySlots = openSlots.filter(s => s.counsel_date === selectedParentDate);
+
+      if (daySlots.length === 0) {
+        grid.innerHTML = '<div class="empty-box">해당 날짜에 예약 가능한 시간이 없습니다.</div>';
+        return;
+      }
+
+      grid.innerHTML = daySlots.map(slot => {
+        const isSelected = selectedSlot && selectedSlot.id === slot.id;
+        return `
+          <button
+            type="button"
+            class="slot-btn ${isSelected ? 'selected' : ''}"
+            ${slot.is_booked ? 'disabled' : ''}
+            onclick="chooseSlot('${slot.id}')"
+          >
+            <span class="slot-time">${formatTime(slot.start_time)} ~ ${formatTime(slot.end_time)}</span>
+            <span class="slot-status">${slot.is_booked ? '예약 마감' : '예약 가능'}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function chooseSlot(slotId) {
+      selectedSlot = openSlots.find(s => s.id === slotId);
+      if (!selectedSlot) return;
+
+      renderParentSlots();
+      document.getElementById('selected-slot-label').textContent =
+        `선택 시간: ${formatDateWithDay(selectedSlot.counsel_date)} ${formatTime(selectedSlot.start_time)} ~ ${formatTime(selectedSlot.end_time)}`;
+      document.getElementById('booking-form-card').style.display = 'block';
+      document.getElementById('booking-form-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function clearSelectedSlot() {
+      selectedSlot = null;
+      document.getElementById('booking-form-card').style.display = 'none';
+      renderParentSlots();
+    }
+
+    async function submitBooking(e) {
+      e.preventDefault();
+      if (!selectedSlot) {
+        alert('먼저 상담 날짜와 시간을 선택해 주세요.');
+        return;
+      }
+
+      const btn = document.getElementById('submit-booking-btn');
+      btn.disabled = true;
+      btn.textContent = '예약 처리 중...';
+
+      const payload = {
+        slot_id: selectedSlot.id,
+        student_number: parseInt(document.getElementById('student-number').value, 10),
+        student_name: document.getElementById('student-name').value.trim(),
+        parent_phone: document.getElementById('parent-phone').value.trim(),
+        counsel_type: document.getElementById('counsel-type').value,
+        pin_code: document.getElementById('pin-code').value.trim(),
+        memo: document.getElementById('memo').value.trim()
+      };
+
+      const { error } = await supabaseClient
+        .from('counseling_bookings')
+        .insert([payload]);
+
+      btn.disabled = false;
+      btn.textContent = '상담 예약 완료하기';
+
+      if (error) {
+        if (error.code === '23505') {
+          alert('이미 다른 학부모님께서 먼저 예약하신 시간입니다. 다른 시간을 선택해 주세요.');
+        } else {
+          alert('예약 중 오류가 발생했습니다: ' + error.message);
+        }
+        clearSelectedSlot();
+        await loadOpenSlots();
+        return;
+      }
+
+      alert(`✅ 상담 예약이 완료되었습니다!\n\n일시: ${formatDateWithDay(selectedSlot.counsel_date)} ${formatTime(selectedSlot.start_time)}~${formatTime(selectedSlot.end_time)}\n학생: ${payload.student_number}번 ${payload.student_name} (${payload.counsel_type})`);
+      document.getElementById('booking-form').reset();
+      clearSelectedSlot();
+      await loadOpenSlots();
+    }
+
+    // =========================================================
+    // 3. [학부모] 본인 예약 조회 및 취소 (RPC 호출)
+    // =========================================================
+    async function searchMyBooking(e) {
+      e.preventDefault();
+      const name = document.getElementById('check-name').value.trim();
+      const pin = document.getElementById('check-pin').value.trim();
+      const resultBox = document.getElementById('my-booking-result');
+
+      resultBox.innerHTML = '<div class="empty-box">조회 중...</div>';
+
+      const { data, error } = await supabaseClient.rpc('get_my_booking', {
+        p_student_name: name,
+        p_pin_code: pin
+      });
+
+      if (error) {
+        resultBox.innerHTML = `<div class="empty-box">조회 실패: ${error.message}</div>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        resultBox.innerHTML = '<div class="empty-box">일치하는 예약 내역이 없습니다.<br>학생 이름과 비밀번호 4자리를 다시 확인해 주세요.</div>';
+        return;
+      }
+
+      resultBox.innerHTML = data.map(item => `
+        <div class="card">
+          <div class="card-title">
+            <span>📌 ${formatDateWithDay(item.counsel_date)} ${formatTime(item.start_time)} ~ ${formatTime(item.end_time)}</span>
+            <span class="badge badge-booked">${item.counsel_type}</span>
+          </div>
+          <p style="font-size:0.92rem; margin-bottom:6px;"><strong>학생:</strong> ${item.student_number}번 ${item.student_name}</p>
+          <p style="font-size:0.92rem; margin-bottom:6px;"><strong>연락처:</strong> ${item.parent_phone}</p>
+          <p style="font-size:0.9rem; color:var(--text-sub); margin-bottom:14px;"><strong>사전 메모:</strong> ${item.memo || '(없음)'}</p>
+          <button class="btn btn-danger btn-sm" onclick="cancelBooking('${item.booking_id}', '${item.student_name}', '${pin}')">
+            예약 취소하기
+          </button>
+        </div>
+      `).join('');
+    }
+
+    async function cancelBooking(bookingId, studentName, pin) {
+      if (!confirm('정말 이 상담 예약을 취소하시겠습니까?')) return;
+
+      const { data, error } = await supabaseClient.rpc('cancel_my_booking', {
+        p_booking_id: bookingId,
+        p_student_name: studentName,
+        p_pin_code: pin
+      });
+
+      if (error || !data) {
+        alert('취소 처리 중 오류가 발생했습니다.');
+        return;
+      }
+
+      alert('예약이 정상적으로 취소되었습니다.');
+      document.getElementById('my-booking-result').innerHTML = '';
+      loadOpenSlots();
+    }
+
+    // =========================================================
+    // 4. [교사] 시간표 생성, 개폐 토글, 전체 예약 명단 조회
+    // =========================================================
+    async function loginTeacher(e) {
+      e.preventDefault();
+      const pw = document.getElementById('teacher-pw').value.trim();
+
+      const { data, error } = await supabaseClient.rpc('teacher_get_all_schedule', {
+        p_password: pw
+      });
+
+      if (error) {
+        alert('비밀번호가 올바르지 않습니다.');
+        return;
+      }
+
+      teacherPassword = pw;
+      allTeacherSlots = data || [];
+      document.getElementById('teacher-login-card').style.display = 'none';
+      document.getElementById('teacher-dashboard').style.display = 'block';
+
+      const today = new Date().toISOString().split('T')[0];
+      if (!document.getElementById('gen-date').value) {
+        document.getElementById('gen-date').value = today;
+      }
+
+      updatePreviewText();
+      renderTeacherDashboard();
+    }
+
+    function logoutTeacher() {
+      teacherPassword = '';
+      document.getElementById('teacher-pw').value = '';
+      document.getElementById('teacher-login-card').style.display = 'block';
+      document.getElementById('teacher-dashboard').style.display = 'none';
+    }
+
+    async function loadTeacherSchedule() {
+      if (!teacherPassword) return;
+
+      const { data, error } = await supabaseClient.rpc('teacher_get_all_schedule', {
+        p_password: teacherPassword
+      });
+
+      if (error) {
+        alert('목록 불러오기 실패: ' + error.message);
+        return;
+      }
+
+      allTeacherSlots = data || [];
+      renderTeacherDashboard();
+    }
+
+    async function generateSlots(e) {
+      e.preventDefault();
+      const dateVal = document.getElementById('gen-date').value;
+      const startVal = document.getElementById('gen-start').value;
+      const endVal = document.getElementById('gen-end').value;
+      const durationVal = parseInt(document.getElementById('gen-duration').value, 10);
+      const breakVal = parseInt(document.getElementById('gen-break').value, 10);
+
+      const { data, error } = await supabaseClient.rpc('teacher_generate_slots', {
+        p_password: teacherPassword,
+        p_date: dateVal,
+        p_start_time: startVal,
+        p_end_limit: endVal,
+        p_duration_min: durationVal,
+        p_break_min: breakVal
+      });
+
+      if (error) {
+        alert('생성 오류: ' + error.message);
+        return;
+      }
+
+      alert(`${formatDateWithDay(dateVal)} 시간표 ${data}개 타임이 생성되었습니다.\n아래 표에서 열어줄 시간대의 [열기] 버튼을 눌러주세요.`);
+      selectedTeacherDate = dateVal;
+      await loadTeacherSchedule();
+    }
+
+    function selectTeacherDate(dateStr) {
+      selectedTeacherDate = dateStr;
+      renderTeacherDashboard();
+    }
+
+    function renderTeacherDashboard() {
+      const pills = document.getElementById('teacher-date-pills');
+      const tbody = document.getElementById('teacher-schedule-body');
+
+      const dates = [...new Set(allTeacherSlots.map(s => s.counsel_date))];
+
+      if (dates.length === 0) {
+        pills.innerHTML = '';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:24px;">생성된 상담 시간표가 없습니다. 위에서 날짜와 시간을 입력해 생성해 주세요.</td></tr>';
+        return;
+      }
+
+      if (!selectedTeacherDate || !dates.includes(selectedTeacherDate)) {
+        selectedTeacherDate = dates[0];
+      }
+
+      pills.innerHTML = dates.map(d => `
+        <button type="button" class="date-pill ${d === selectedTeacherDate ? 'active' : ''}" onclick="selectTeacherDate('${d}')">
+          ${formatDateWithDay(d)}
+        </button>
+      `).join('');
+
+      const rows = allTeacherSlots.filter(s => s.counsel_date === selectedTeacherDate);
+
+      tbody.innerHTML = rows.map(row => {
+        const openBadge = row.is_open
+          ? '<span class="badge badge-open">열림 (노출중)</span>'
+          : '<span class="badge badge-closed">닫힘 (숨김)</span>';
+
+        const bookBadge = row.is_booked
+          ? '<span class="badge badge-booked">예약완료</span>'
+          : '<span style="color:#94a3b8; font-size:0.82rem;">대기중</span>';
+
+        const studentInfo = row.is_booked
+          ? `<strong>${row.student_number}번 ${row.student_name}</strong><br><span style="font-size:0.8rem; color:#64748b;">${row.parent_phone}</span>`
+          : '-';
+
+        const actionBtn = row.is_booked
+          ? '<span style="font-size:0.8rem; color:#94a3b8;">예약됨</span>'
+          : `<button class="btn btn-sm ${row.is_open ? 'btn-danger' : 'btn-outline'}" onclick="toggleSlot('${row.slot_id}')">
+              ${row.is_open ? '닫기' : '열기'}
+            </button>`;
+
+        return `
+          <tr>
+            <td><strong>${formatTime(row.start_time)} ~ ${formatTime(row.end_time)}</strong></td>
+            <td>${openBadge}</td>
+            <td>${bookBadge}</td>
+            <td>${studentInfo}</td>
+            <td>${row.counsel_type || '-'}</td>
+            <td class="memo-cell">${row.memo || '-'}</td>
+            <td>${actionBtn}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function toggleSlot(slotId) {
+      const { error } = await supabaseClient.rpc('teacher_toggle_slot', {
+        p_password: teacherPassword,
+        p_slot_id: slotId
+      });
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
+      await loadTeacherSchedule();
+    }
+
+    loadOpenSlots();
+  </script>
+</body>
+</html>
